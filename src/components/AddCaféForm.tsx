@@ -1,86 +1,56 @@
 import { useState } from "react";
 
-type AddCaféFormProps = {
-  onAddCafé: (newCafé: { name: string; address: string; wifi: boolean; power: boolean; rating: number }) => void;
-};
-
-export default function AddCaféForm({ onAddCafé }: AddCaféFormProps) {
+const AddCaféForm = ({ onSubmit }: { onSubmit: (newCafe: any) => void }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
   const [wifi, setWifi] = useState(false);
-  const [power, setPower] = useState(false);
-  const [rating, setRating] = useState(0);
+  const [outlets, setOutlets] = useState(false);
+  const [reviews, setReviews] = useState<string[]>([]);
+  const [hours, setHours] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAddCafé({ name, address, wifi, power, rating });
-    setName("");
-    setAddress("");
-    setWifi(false);
-    setPower(false);
-    setRating(0);
+    onSubmit({
+      id: Date.now().toString(), // Un ID unique pour chaque café
+      name,
+      address,
+      latitude,
+      longitude,
+      wifi,
+      outlets,
+      reviews,
+      hours,
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 max-w-md mx-auto mb-6">
-      <h2 className="text-xl font-semibold mb-4">Ajouter un café</h2>
+    <form onSubmit={handleSubmit}>
+      <label>Nom du café</label>
+      <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
 
-      <label className="block text-sm font-medium text-gray-700 mb-2">Nom du café</label>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="block w-full p-2 border border-gray-300 rounded-md mb-4"
-        placeholder="Nom du café"
-        required
-      />
+      <label>Adresse</label>
+      <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} />
 
-      <label className="block text-sm font-medium text-gray-700 mb-2">Adresse</label>
-      <input
-        type="text"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        className="block w-full p-2 border border-gray-300 rounded-md mb-4"
-        placeholder="Adresse"
-        required
-      />
+      <label>Latitude</label>
+      <input type="number" value={latitude} onChange={(e) => setLatitude(+e.target.value)} />
 
-      <div className="flex items-center mb-4">
-        <input
-          type="checkbox"
-          checked={wifi}
-          onChange={() => setWifi(!wifi)}
-          className="mr-2"
-        />
-        <span>WiFi</span>
-      </div>
+      <label>Longitude</label>
+      <input type="number" value={longitude} onChange={(e) => setLongitude(+e.target.value)} />
 
-      <div className="flex items-center mb-4">
-        <input
-          type="checkbox"
-          checked={power}
-          onChange={() => setPower(!power)}
-          className="mr-2"
-        />
-        <span>Prises électriques</span>
-      </div>
+      <label>Wi-Fi disponible</label>
+      <input type="checkbox" checked={wifi} onChange={() => setWifi(!wifi)} />
 
-      <label className="block text-sm font-medium text-gray-700 mb-2">Note</label>
-      <input
-        type="number"
-        value={rating}
-        onChange={(e) => setRating(Number(e.target.value))}
-        min="0"
-        max="5"
-        step="0.1"
-        className="block w-full p-2 border border-gray-300 rounded-md mb-4"
-        placeholder="Note sur 5"
-        required
-      />
+      <label>Prises électriques disponibles</label>
+      <input type="checkbox" checked={outlets} onChange={() => setOutlets(!outlets)} />
 
-      <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md">
-        Ajouter
-      </button>
+      <label>Horaires d'ouverture</label>
+      <input type="text" value={hours} onChange={(e) => setHours(e.target.value)} />
+
+      <button type="submit">Ajouter le café</button>
     </form>
   );
-}
+};
+
+export default AddCaféForm;
